@@ -1,0 +1,11 @@
+abbrev_defs
+auto-save-list
+backups
+*.elc
+url
+.places
+*~
+eshell
+semanticdb
+ac-comphist.dat
+eln-cache

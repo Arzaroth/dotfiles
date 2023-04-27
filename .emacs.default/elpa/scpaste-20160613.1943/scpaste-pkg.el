@@ -1,0 +1,1 @@
+(define-package "scpaste" "20160613.1943" "Paste to the web via scp." '((htmlize "1.39")) :commit "eb415f7ca56d64c89cf99d5c6f8a442c4ec3912e" :url "https://github.com/technomancy/scpaste" :keywords '("convenience" "hypermedia"))

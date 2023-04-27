@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: main
+# key: main
+# --
+int     main(int ac,
+             char *const av[],
+             char *const envp[]) {
+  $0
+  return 0;
+}
