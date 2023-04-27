@@ -1,0 +1,10 @@
+(require 'semantic)
+(semantic-mode t)
+(global-semantic-decoration-mode)
+(global-semantic-idle-summary-mode)
+(global-semantic-idle-completions-mode)
+(global-semantic-highlight-func-mode)
+(global-semantic-highlight-edits-mode)
+(global-semantic-idle-local-symbol-highlight-mode)
+
+(provide 'setup-cedet)

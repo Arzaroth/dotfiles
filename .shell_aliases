@@ -1,0 +1,47 @@
+#!/bin/sh
+#  ______                            _               _
+# (_____ \                      _   (_)_            | |
+#  _____) )___ ___  ____  ____ | |_  _| |_ _   _  _ | | ____
+# |  ____/ ___) _ \|    \|  _ \|  _)| |  _) | | |/ || |/ _  )
+# | |   | |  | |_| | | | | | | | |__| | |_| |_| ( (_| ( (/ /
+# |_|   |_|   \___/|_|_|_| ||_/ \___)_|\___)____|\____|\____)
+#                        |_|
+
+if [ -x "$(command -v lsd)" ]; then
+    alias ls="lsd"
+    alias ll="lsd -l"
+    alias la="lsd -a"
+    alias l="lsd -F"
+elif [ -x "$(command -v exa)" ]; then
+    alias ls="exa"
+    alias ll="exa -lgh"
+    alias la="exa -lgha"
+    alias l="exa -GF"
+else
+    alias ls='ls --color=auto --ignore="*.pyc"'
+    alias ll='ls -lF'
+    alias la='ls -lA'
+    alias l='ls -CF'
+fi
+
+if [ -x "$(command -v bat)" ]; then
+    alias cat='bat --paging=never'
+    alias less='bat --paging=always'
+else
+    alias less='less -R'
+fi
+
+# emacs should never start in a window
+alias emacs='\emacsclient -t'
+alias ne='emacs'
+
+alias kc='clang -Wextra -Werror -Wall'
+alias kp='clang++ -Wextra -Werror -Wall'
+
+alias j='jobs'
+
+# rsync > cp
+alias cp='rsync -azvtP'
+
+# custom stuff for convenience
+alias clpw='clear; ll; pwd'
