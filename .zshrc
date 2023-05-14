@@ -16,7 +16,7 @@ fi
 
 # ssh-agent from wsl
 [ -n "${WSL_AUTH_SOCK}" ] && export SSH_AUTH_SOCK="${WSL_AUTH_SOCK}"
-# zstyle :omz:plugins:ssh-agent identities id_rsa id_axxone id_axxone_lan
+# zstyle :omz:plugins:ssh-agent identities id_rsa
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent quiet yes
 
