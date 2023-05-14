@@ -32,8 +32,7 @@ else
 fi
 
 # emacs should never start in a window
-alias emacs='\emacsclient -t'
-alias ne='emacs'
+alias emacs="$EMACS_PLUGIN_LAUNCHER -nw"
 
 alias kc='clang -Wextra -Werror -Wall'
 alias kp='clang++ -Wextra -Werror -Wall'
