@@ -51,18 +51,18 @@ COMPLETION_WAITING_DOTS="true"
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 HIST_STAMPS="yyyy-mm-dd"
 plugins=(
-  git python themes command-not-found
-  colored-man-pages sudo pip wd screen
-  virtualenv docker nmap
+  git python themes
+  command-not-found history-substring-search battery
+  colored-man-pages sudo pip wd tmux fd emacs
+  virtualenv docker docker-compose nmap yarn httpie
   ssh-agent fzf ssh delta
-  zsh-autosuggestions zsh-history-substring-search zsh-syntax-highlighting
+  zsh-autosuggestions zsh-syntax-highlighting
 )
 [[ ! -f "${ZSH}"/oh-my-zsh.sh ]] || source "${ZSH}"/oh-my-zsh.sh
 [[ ! -f /etc/environment ]] || source /etc/environment
 [[ ! -f ~/.shell_aliases ]] || source ~/.shell_aliases
 
 export ALTERNATE_EDITOR=""
-export EDITOR="emacsclient -t"
 export TERM="xterm-256color"
 export ARCHFLAGS="-arch x86_64"
 
