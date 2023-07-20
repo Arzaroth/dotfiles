@@ -1,3 +1,5 @@
 *~
 .emacs.d/session.*
 .emacs.d/#*#
+.tmux/plugins
+!.tmux/plugins/tpm
