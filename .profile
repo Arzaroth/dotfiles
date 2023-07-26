@@ -1,3 +1,12 @@
+#!/bin/sh
+#  ______                            _               _
+# (_____ \                      _   (_)_            | |
+#  _____) )___ ___  ____  ____ | |_  _| |_ _   _  _ | | ____
+# |  ____/ ___) _ \|    \|  _ \|  _)| |  _) | | |/ || |/ _  )
+# | |   | |  | |_| | | | | | | | |__| | |_| |_| ( (_| ( (/ /
+# |_|   |_|   \___/|_|_|_| ||_/ \___)_|\___)____|\____|\____)
+#                        |_|
+
 # ~/.profile: executed by the command interpreter for login shells.
 # This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
 # exists.
@@ -12,7 +21,7 @@
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
     if [ -f "$HOME/.bashrc" ]; then
-	. "$HOME/.bashrc"
+         "$HOME/.bashrc"
     fi
 fi
 
@@ -25,3 +34,19 @@ fi
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
+
+# fzf
+export FZF_DEFAULT_OPTS="
+  --no-mouse --height 50% -1 --reverse --multi --inline-info --border
+  --bind='?:toggle-preview'
+  --bind='ctrl-a:select-all+accept'
+  --bind='ctrl-u:preview-page-up'
+  --bind='ctrl-d:preview-page-down'
+  --preview-window 'right:hidden:wrap'
+  --preview '([[ -d {} ]] && tree {}) || ([[ -f {} ]] && ([[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat --style=numbers --color=always --line-range :300 {} || (cat {} | head -300)) 2>/dev/null)) || echo {}'"
+
+export ALTERNATE_EDITOR=""
+export TERM="xterm-256color"
+export ARCHFLAGS="-arch x86_64"
+
+export FIGNORE=".o:.pyc"

@@ -8,39 +8,33 @@
 #                        |_|
 
 if [ -x "$(command -v lsd)" ]; then
-    alias ls="lsd"
-    alias ll="lsd -l"
-    alias la="lsd -a"
-    alias l="lsd -F"
+  alias ls="lsd"
+  alias ll="lsd -l"
+  alias la="lsd -a"
+  alias l="lsd -F"
 elif [ -x "$(command -v exa)" ]; then
-    alias ls="exa"
-    alias ll="exa -lgh"
-    alias la="exa -lgha"
-    alias l="exa -GF"
+  alias ls="exa"
+  alias ll="exa -lgh"
+  alias la="exa -lgha"
+  alias l="exa -GF"
 else
-    alias ls='ls --color=auto --ignore="*.pyc"'
-    alias ll='ls -lF'
-    alias la='ls -lA'
-    alias l='ls -CF'
+  alias ls='ls --color=auto --ignore="*.pyc"'
+  alias ll='ls -lF'
+  alias la='ls -lA'
+  alias l='ls -CF'
 fi
 
 if [ -x "$(command -v bat)" ]; then
-    alias cat='bat --paging=never'
-    alias less='bat --paging=always'
+  alias cat='bat --paging=never'
+  alias less='bat --paging=always'
 else
-    alias less='less -R'
+  alias less='less -R'
 fi
 
 # emacs should never start in a window
 alias emacs="$EMACS_PLUGIN_LAUNCHER -nw"
 
-alias kc='clang -Wextra -Werror -Wall'
-alias kp='clang++ -Wextra -Werror -Wall'
-
 alias j='jobs'
 
 # rsync > cp
 alias cp='rsync -azvtP'
-
-# custom stuff for convenience
-alias clpw='clear; ll; pwd'
