@@ -19,11 +19,6 @@ fi
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent quiet yes
 
-# custom completion path
-fpath=(~/.zsh/completion $fpath)
-
-autoload -Uz compinit && compinit
-
 typeset -Ag ZI
 typeset -gx ZI[HOME_DIR]="${HOME}/.zi"
 typeset -gz ZI[BIN_DIR]="${ZI[HOME_DIR]}/bin"
@@ -43,7 +38,8 @@ zicompinit
 zi light-mode for \
   z-shell/z-a-meta-plugins \
   @annexes \
-  @zsh-users+fast
+  @zsh-users+fast \
+  @ext-git
 
 zi ice atinit'typeset -gx HYPHEN_INSENSITIVE=true ENABLE_CORRECTION=true COMPLETION_WAITING_DOTS=true HIST_STAMPS=yyyy-mm-dd HISTFILE=${HOME}/.zsh_history'
 zi light ohmyzsh/ohmyzsh
@@ -53,7 +49,7 @@ zi wait lucid for \
     atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
   z-shell/F-Sy-H \
     atload"unalias grv g" \
-  OMZP::{git,themes,battery,sudo,encode64,extract,colored-man-pages,wd,tmux,nmap,command-not-found} \
+  OMZP::{git,themes,battery,sudo,encode64,extract,colored-man-pages,wd,nmap,command-not-found} \
     has'emacs' \
   OMZP::emacs \
     has'python' \
@@ -83,9 +79,9 @@ export LC_ALL=en_US.UTF-8
 [[ ! -f /etc/environment ]] || source /etc/environment
 [[ ! -f ~/.profile ]] || source ~/.profile
 [[ ! -f ~/.shell_aliases ]] || source ~/.shell_aliases
-if [ ! -d "~/.tmux/plugins/tpm" ]; then
+if [ ! -d ~/.tmux/plugins/tpm ]; then
   print -P "%F{33}▓▒░ %F{160}Installing (%F{33}tpm%F{160})…%f"
-  command mkdir -p "~/.tmux/plugins/tpm" && command chmod g-rwX "~/.tmux/plugins/tpm"
+  command mkdir -p ~/.tmux/plugins && command chmod g-rwX ~/.tmux/plugins
   command git clone -q https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && \
     print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
     print -P "%F{160}▓▒░ The clone has failed.%f%b"
