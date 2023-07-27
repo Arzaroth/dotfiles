@@ -71,7 +71,7 @@ zi wait lucid for \
     as"completion" \
   OMZP::ripgrep/_ripgrep
 
-zi pack"bgn-binary+keys" for fzf
+zi pack"bgn-binary+keys" multisrc"key-bindings.zsh _fzf_completion" for fzf
 
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
