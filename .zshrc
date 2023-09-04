@@ -50,8 +50,10 @@ zi wait lucid for \
   z-shell/F-Sy-H \
     atload"unalias grv g" \
   OMZP::{git,themes,battery,sudo,encode64,extract,colored-man-pages,wd,nmap,command-not-found} \
-    has'emacs' \
+    has'emacs' nocompile svn multisrc'emacs.plugin.zsh' pick'/dev/null' \
   OMZP::emacs \
+    nocompile svn multisrc'aliases.plugin.zsh' pick'/dev/null' \
+  OMZP::aliases \
     has'python' \
   OMZP::{python,pip,virtualenv} \
     has'docker' \
