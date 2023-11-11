@@ -46,14 +46,17 @@ This function should only modify configuration layer settings."
      ;; lsp
      ;; markdown
      multiple-cursors
+     nginx
      ;; org
      ;; (shell :variables
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
      ;; spell-checking
+     sql
      ;; syntax-checking
      ;; version-control
-     treemacs)
+     treemacs
+     yaml)
 
 
    ;; List of additional packages that will be installed without being wrapped
