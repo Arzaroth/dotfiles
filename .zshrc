@@ -41,10 +41,23 @@ zi light-mode for \
   @zsh-users+fast \
   @ext-git
 
-zi ice atinit'typeset -gx HYPHEN_INSENSITIVE=true ENABLE_CORRECTION=true COMPLETION_WAITING_DOTS=true HIST_STAMPS=yyyy-mm-dd HISTFILE=${HOME}/.zsh_history'
-zi light ohmyzsh/ohmyzsh
 zi ice depth=1
 zi light romkatv/powerlevel10k
+
+zi-turbo '0a' lucid is-snippet for has'svn' svn multisrc'$array' pick'/dev/null' \
+  atinit'HISTFILE=${HOME}/.cache/zi/zsh-history; COMPLETION_WAITING_DOTS=true' OMZ::lib
+if (( $+commands[svn] )) {
+    sni=({compfix,completion,correction,directories,functions,git,grep,history,key-bindings,misc,prompt_info_functions,spectrum,termsupport,theme-and-appearance,vcs_info}.zsh)
+    zi is-snippet has'svn' for svn \
+        multisrc'${sni[*]}' pick'/dev/null' \
+        atinit'typeset -gx HYPHEN_INSENSITIVE=true ENABLE_CORRECTION=true COMPLETION_WAITING_DOTS=true \
+    HIST_STAMPS=yyyy-mm-dd HISTSIZE=290000 SAVEHIST=290000 HISTFILE=${HOME}/.zsh_history;' \
+      OMZ::lib
+    unset sni
+} else {
+    +zi-message "{auto}Subversion not installed!"
+}
+
 zi wait lucid for \
     atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
   z-shell/F-Sy-H \
@@ -66,6 +79,8 @@ zi wait lucid for \
   OMZP::yarn \
     if'[[ -d ~/.ssh ]]' \
   OMZP::ssh-agent \
+    as"completion" \
+  OMZP::docker/completions/_docker \
     as"completion" \
   OMZP::fd/_fd \
     as"completion" \
