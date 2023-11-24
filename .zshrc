@@ -67,11 +67,11 @@ zi wait lucid for \
   OMZP::{git,themes,battery,sudo,encode64,extract,colored-man-pages,wd,nmap,command-not-found} \
     has'emacs' nocompile svn multisrc'emacs.plugin.zsh' pick'/dev/null' \
   OMZP::emacs \
-    nocompile svn multisrc'aliases.plugin.zsh' pick'/dev/null' \
+    svn multisrc'aliases.plugin.zsh' pick'/dev/null' \
   OMZP::aliases \
     has'python' \
   OMZP::{python,pip,virtualenv} \
-    has'docker' \
+    has'docker' svn multisrc'docker.plugin.zsh' pick'/dev/null' \
   OMZP::{docker,docker-compose} \
     if'[[ -f /etc/os-release ]] && source /etc/os-release && [[ "$ID" = arch ]]' \
   OMZP::archlinux \
@@ -81,8 +81,6 @@ zi wait lucid for \
   OMZP::yarn \
     if'[[ -d ~/.ssh ]]' \
   OMZP::ssh-agent \
-    as"completion" \
-  OMZP::docker/completions/_docker \
     as"completion" \
   OMZP::fd/_fd \
     as"completion" \
