@@ -44,14 +44,16 @@ zi light-mode for \
 zi ice depth=1
 zi light romkatv/powerlevel10k
 
-zi-turbo '0a' lucid is-snippet for has'svn' svn multisrc'$array' pick'/dev/null' \
-  atinit'HISTFILE=${HOME}/.cache/zi/zsh-history; COMPLETION_WAITING_DOTS=true' OMZ::lib
 if (( $+commands[svn] )) {
     sni=({compfix,completion,correction,directories,functions,git,grep,history,key-bindings,misc,prompt_info_functions,spectrum,termsupport,theme-and-appearance,vcs_info}.zsh)
     zi is-snippet has'svn' for svn \
         multisrc'${sni[*]}' pick'/dev/null' \
         atinit'typeset -gx HYPHEN_INSENSITIVE=true ENABLE_CORRECTION=true COMPLETION_WAITING_DOTS=true \
-    HIST_STAMPS=yyyy-mm-dd HISTSIZE=290000 SAVEHIST=290000 HISTFILE=${HOME}/.zsh_history;' \
+    HIST_STAMPS=yyyy-mm-dd HISTSIZE=290000 SAVEHIST=290000 HISTFILE=${HOME}/.zsh_history \
+    ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"; \
+    mkdir -p "$ZSH_CACHE_DIR/completions"; \
+    (( ${fpath[(Ie)"$ZSH_CACHE_DIR/completions"]} )) || fpath=("$ZSH_CACHE_DIR/completions" $fpath);' \
+        atload'[[ -z "$LS_COLORS" ]] || zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"' \
       OMZ::lib
     unset sni
 } else {
