@@ -19,60 +19,61 @@ fi
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent quiet yes
 
-typeset -Ag ZI
-typeset -gx ZI[HOME_DIR]="${HOME}/.zi"
-typeset -gz ZI[BIN_DIR]="${ZI[HOME_DIR]}/bin"
+typeset -Ag ZINIT
+typeset -gx ZINIT[HOME_DIR]="${HOME}/.zinit"
+typeset -gz ZINIT[BIN_DIR]="${ZINIT[HOME_DIR]}/zinit.git"
 
-if [ ! -d "${ZI[BIN_DIR]}" ]; then
-  print -P "%F{33}▓▒░ %F{160}Installing (%F{33}z-shell/zi%F{160})…%f"
-  command mkdir -p "${ZI[HOME_DIR]}" && command chmod g-rwX "${ZI[HOME_DIR]}"
-  command git clone -q --depth=1 --branch "main" https://github.com/z-shell/zi "${ZI[BIN_DIR]}" && \
+if [ ! -d "${ZINIT[BIN_DIR]}" ]; then
+  print -P "%F{33}▓▒░ %F{160}Installing (%F{33}zdharma-continuum/zinit%F{160})…%f"
+  command mkdir -p "${ZINIT[HOME_DIR]}" && command chmod g-rwX "${ZINIT[HOME_DIR]}"
+  command git clone -q --depth=1 --branch "main" https://github.com/zdharma-continuum/zinit.git "${ZINIT[BIN_DIR]}" && \
     print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
     print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
-source "${ZI[BIN_DIR]}/zi.zsh"
-autoload -Uz _zi
-(( ${+_comps} )) && _comps[zi]=_zi
+source "${ZINIT[BIN_DIR]}/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
 zicompinit
 
 zi light-mode for \
-  z-shell/z-a-meta-plugins \
-  @annexes \
-  @zsh-users+fast \
-  @ext-git
+  zdharma-continuum/zinit-annex-bin-gem-node \
+  zdharma-continuum/zinit-annex-patch-dl \
+  z-shell/zsh-fancy-completions \
+  wfxr/forgit
+
+zinit wait lucid for \
+    atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+  zdharma-continuum/fast-syntax-highlighting \
+    blockf \
+  zsh-users/zsh-completions \
+    atload"!_zsh_autosuggest_start" \
+  zsh-users/zsh-autosuggestions
 
 zi ice depth=1
 zi light romkatv/powerlevel10k
 
-if (( $+commands[svn] )) {
-    sni=({compfix,completion,correction,directories,functions,git,grep,history,key-bindings,misc,prompt_info_functions,spectrum,termsupport,theme-and-appearance,vcs_info}.zsh)
-    zi is-snippet has'svn' for svn \
-        multisrc'${sni[*]}' pick'/dev/null' \
-        atinit'typeset -gx HYPHEN_INSENSITIVE=true ENABLE_CORRECTION=true COMPLETION_WAITING_DOTS=true \
-    HIST_STAMPS=yyyy-mm-dd HISTSIZE=290000 SAVEHIST=290000 HISTFILE=${HOME}/.zsh_history \
-    ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"; \
-    mkdir -p "$ZSH_CACHE_DIR/completions"; \
-    (( ${fpath[(Ie)"$ZSH_CACHE_DIR/completions"]} )) || fpath=("$ZSH_CACHE_DIR/completions" $fpath);' \
-        atload'[[ -z "$LS_COLORS" ]] || zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"' \
-      OMZ::lib
-    unset sni
-} else {
-    +zi-message "{auto}Subversion not installed!"
-}
+# Make sure $ZSH_CACHE_DIR is writable, otherwise use a directory in $HOME
+if [[ ! -w "$ZSH_CACHE_DIR" ]]; then
+  ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"
+fi
+# Create cache and completions dir and add to $fpath
+mkdir -p "$ZSH_CACHE_DIR/completions"
+(( ${fpath[(Ie)"$ZSH_CACHE_DIR/completions"]} )) || fpath=("$ZSH_CACHE_DIR/completions" $fpath)
+
+zi light-mode for \
+  OMZL::{compfix,directories,functions,git,grep,key-bindings,misc,prompt_info_functions,spectrum,termsupport,theme-and-appearance,vcs_info}.zsh \
+    atinit'typeset -gx HYPHEN_INSENSITIVE=true COMPLETION_WAITING_DOTS=true' \
+  OMZL::completion.zsh \
+    atinit'typeset -gx ENABLE_CORRECTION=true' \
+  OMZL::correction.zsh \
+    atinit'typeset -gx HIST_STAMPS=yyyy-mm-dd HISTSIZE=290000 SAVEHIST=290000 HISTFILE=${HOME}/.zsh_history' \
+  OMZL::history.zsh
+
+# set completion colors to be the same as `ls`, after theme has been loaded
+[[ -z "$LS_COLORS" ]] || zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 zi wait lucid for \
-    atinit"ZI[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-  z-shell/F-Sy-H \
-    atload"unalias grv g" \
-  OMZP::{git,themes,battery,sudo,encode64,extract,colored-man-pages,wd,nmap,command-not-found} \
-    has'emacs' nocompile svn multisrc'emacs.plugin.zsh' pick'/dev/null' \
-  OMZP::emacs \
-    svn multisrc'aliases.plugin.zsh' pick'/dev/null' \
-  OMZP::aliases \
-    has'python' \
-  OMZP::{python,pip,virtualenv} \
-    has'docker' svn multisrc'docker.plugin.zsh' pick'/dev/null' \
-  OMZP::{docker,docker-compose} \
+  OMZP::{themes,battery,sudo,encode64,extract,colored-man-pages,wd,nmap,command-not-found} \
     if'[[ -f /etc/os-release ]] && source /etc/os-release && [[ "$ID" = arch ]]' \
   OMZP::archlinux \
     if'[[ -f /etc/os-release ]] && source /etc/os-release && [[ "$ID" = debian ]]' \
@@ -80,13 +81,23 @@ zi wait lucid for \
     has'yarn' \
   OMZP::yarn \
     if'[[ -d ~/.ssh ]]' \
-  OMZP::ssh-agent \
-    as"completion" \
-  OMZP::fd/_fd \
-    as"completion" \
-  OMZP::httpie/_httpie \
-    as"completion" \
-  OMZP::ripgrep/_ripgrep
+  OMZP::ssh-agent
+
+#zi is-snippet wait lucid for \
+#    svn multisrc'aliases.plugin.zsh' pick'/dev/null' \
+#  OMZP::aliases \
+#    has'emacs' nocompile svn multisrc'emacs.plugin.zsh' pick'/dev/null' \
+#  OMZP::emacs
+#
+#zi has'docker' is-snippet wait lucid for \
+#    svn multisrc'docker.plugin.zsh' pick'/dev/null' \
+#  OMZP::{docker,docker-compose}
+
+zi has'python' is-snippet wait lucid for \
+  OMZP::{python,pip,virtualenv}
+
+zi as'completion' is-snippet wait lucid for \
+  OMZP::{fd/_fd,httpie/_httpie,ripgrep/_ripgrep}
 
 zi pack"bgn-binary+keys" multisrc"key-bindings.zsh _fzf_completion" for fzf
 
