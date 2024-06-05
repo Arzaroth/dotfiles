@@ -19,6 +19,30 @@ fi
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent quiet yes
 
+setopt RE_MATCH_PCRE   # _fix-omz-plugin function uses this regex style
+
+# Workaround for zinit issue#504: remove subversion dependency. Function clones all files in plugin
+# directory (on github) that might be useful to zinit snippet directory. Should only be invoked
+# via zinit atclone"_fix-omz-plugin"
+_fix-omz-plugin() {
+  if [[ ! -f ._zinit/teleid ]] then return 0; fi
+  if [[ ! $(cat ._zinit/teleid) =~ "^OMZP::.*" ]] then return 0; fi
+  local OMZP_NAME=$(cat ._zinit/teleid | sed -n 's/OMZP:://p')
+  git clone --quiet --no-checkout --depth=1 --filter=tree:0 https://github.com/ohmyzsh/ohmyzsh
+  cd ohmyzsh
+  git sparse-checkout set --no-cone plugins/$OMZP_NAME
+  git checkout --quiet
+  cd ..
+  local OMZP_PATH="ohmyzsh/plugins/$OMZP_NAME"
+  local file
+  for file in $OMZP_PATH/*~(.gitignore|README.md|*.plugin.zsh)(D); do
+    local filename="${file:t}"
+    echo "Copying $file to $(pwd)/$filename..."
+    cp $file $filename
+  done
+  rm -rf ohmyzsh
+}
+
 typeset -Ag ZINIT
 typeset -gx ZINIT[HOME_DIR]="${HOME}/.zinit"
 typeset -gz ZINIT[BIN_DIR]="${ZINIT[HOME_DIR]}/zinit.git"
@@ -73,7 +97,7 @@ zi light-mode for \
 [[ -z "$LS_COLORS" ]] || zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 zi wait lucid for \
-  OMZP::{themes,battery,sudo,encode64,extract,colored-man-pages,wd,nmap,command-not-found} \
+  OMZP::{themes,battery,sudo,encode64,extract,nmap,command-not-found} \
     if'[[ -f /etc/os-release ]] && source /etc/os-release && [[ "$ID" = arch ]]' \
   OMZP::archlinux \
     if'[[ -f /etc/os-release ]] && source /etc/os-release && [[ "$ID" = debian ]]' \
@@ -83,15 +107,19 @@ zi wait lucid for \
     if'[[ -d ~/.ssh ]]' \
   OMZP::ssh-agent
 
-#zi is-snippet wait lucid for \
-#    svn multisrc'aliases.plugin.zsh' pick'/dev/null' \
-#  OMZP::aliases \
-#    has'emacs' nocompile svn multisrc'emacs.plugin.zsh' pick'/dev/null' \
+zi is-snippet wait lucid for \
+   atpull"%atclone" atclone"_fix-omz-plugin" \
+ OMZP::aliases \
+   atpull"%atclone" atclone"_fix-omz-plugin" \
+ OMZP::colored-man-pages
+
+# zi is-snippet wait lucid for \
+#    has'emacs' nocompile atpull"%atclone" atclone"_fix-omz-plugin" \
 #  OMZP::emacs
-#
-#zi has'docker' is-snippet wait lucid for \
-#    svn multisrc'docker.plugin.zsh' pick'/dev/null' \
-#  OMZP::{docker,docker-compose}
+
+zi has'docker' is-snippet wait lucid for \
+   atpull"%atclone" atclone"_fix-omz-plugin" \
+ OMZP::{docker,docker-compose}
 
 zi has'python' is-snippet wait lucid for \
   OMZP::{python,pip,virtualenv}
@@ -118,7 +146,6 @@ fi
 setopt auto_cd
 setopt nohashdirs
 setopt interactivecomments
-unsetopt share_history
 unsetopt beep
 bindkey \^U backward-kill-line
 
