@@ -1,0 +1,154 @@
+#:schema https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json
+#  ______                            _               _
+# (_____ \                      _   (_)_            | |
+#  _____) )___ ___  ____  ____ | |_  _| |_ _   _  _ | | ____
+# |  ____/ ___) _ \|    \|  _ \|  _)| |  _) | | |/ || |/ _  )
+# | |   | |  | |_| | | | | | | | |__| | |_| |_| ( (_| ( (/ /
+# |_|   |_|   \___/|_|_|_| ||_/ \___)_|\___)____|\____|\____)
+#                        |_|
+
+version = 2
+
+[[blocks]]
+  type = 'prompt'
+  alignment = 'left'
+
+  [[blocks.segments]]
+    type = 'os'
+    style = 'plain'
+    foreground = 'p:os'
+    background = 'p:bg'
+    template = ' {{ .Icon }} <p:separator></>'
+
+  [[blocks.segments]]
+    type = 'session'
+    style = 'diamond'
+    foreground = 'p:host'
+    background = 'p:bg'
+    template = ' {{ if ne .Env.POSH_SESSION_DEFAULT_USER .UserName }}{{ if .Root }}<p:root><b>{{ .UserName }}</b></>{{ else }}<p:user>{{ .UserName }}</>{{ end }}<#7a7a7a>@</>{{ end }}{{ .HostName }} {{ if .SSHSession }} {{ end }}<p:separator></>'
+
+  [[blocks.segments]]
+    type = 'path'
+    style = 'powerline'
+    foreground = 'p:path'
+    background = 'p:bg'
+    template = ' {{ if not .Writable }} {{ end }}{{ .Path }} '
+
+    [blocks.segments.properties]
+      folder_icon = ''
+      folder_separator_icon = '  '
+      home_icon = ''
+      style = 'agnoster'
+
+  [[blocks.segments]]
+    type = 'git'
+    style = 'powerline'
+    foreground = 'p:git'
+    background = 'p:bg'
+    template = '<p:separator> </>{{ .UpstreamIcon }}{{ .HEAD }}{{ if .BranchStatus }} {{ .BranchStatus }}{{ end }} '
+
+    [blocks.segments.properties]
+      fetch_upstream_icon = true
+      commit_icon = '@'
+
+  [[blocks.segments]]
+    type = 'text'
+    style = 'plain'
+    foreground = 'p:bg'
+    background = 'transparent'
+    template = ''
+
+[[blocks]]
+  type = 'rprompt'
+  overflow = 'hidden'
+
+  [[blocks.segments]]
+    type = 'text'
+    style = 'plain'
+    foreground = 'p:rbg'
+    background = 'transparent'
+    template = ''
+
+  [[blocks.segments]]
+    type = 'status'
+    style = 'powerline'
+    foreground = 'p:csuccess'
+    foreground_templates = ['{{ if gt .Code 0 }}p:cerror{{ end }}']
+    background = 'p:rbg'
+    template = ' {{ if gt .Code 0 }}<b>{{ reason .Code }}</b> ✘{{ else }}{{ end }} <p:rseparator></>'
+
+    [blocks.segments.properties]
+      always_enabled = true
+
+  [[blocks.segments]]
+    type = 'executiontime'
+    style = 'plain'
+    foreground = 'p:time'
+    background = 'p:rbg'
+    template = ' {{ .FormattedMs }}   <p:rseparator></>'
+
+    [blocks.segments.properties]
+      threshold = 5000
+
+  [[blocks.segments]]
+    type = 'text'
+    style = 'plain'
+    foreground = 'p:jobs'
+    background = 'p:rbg'
+    template = ' {{ if gt (int (.Env.BG_JOBS)) 0 }}{{ if gt (int (.Env.BG_JOBS)) 1 }}{{ .Env.BG_JOBS }} {{ end }} <p:rseparator></>{{ end }}'
+
+  [[blocks.segments]]
+    type = 'time'
+    style = 'plain'
+    foreground = 'p:date'
+    background = 'p:rbg'
+    template = ' {{ .CurrentDate | date .Format }}  '
+
+    [blocks.segments.properties]
+      time_format = '15:04:05'
+
+[[blocks]]
+  type = 'prompt'
+  alignment = 'left'
+  newline = true
+
+  [[blocks.segments]]
+    type = 'status'
+    style = 'plain'
+    foreground = 'p:pdefault'
+    background = 'transparent'
+    template = '❯ '
+
+    [blocks.segments.properties]
+      always_enabled = true
+
+[transient_prompt]
+  foreground = 'p:psuccess'
+  foreground_templates = ['{{ if gt .Code 0 }}p:perror{{ end }}']
+  background = 'transparent'
+  template = '❯ '
+
+[secondary_prompt]
+  foreground = 'p:pdefault'
+  background = 'transparent'
+  template = '❯❯ '
+
+[palette]
+  bg = '#444444'
+  rbg = '#444444'
+  separator = '#949494'
+  rseparator = '#949494'
+  os = '#EEEEEE'
+  root = '#D7AF00'
+  user = '#D7AF87'
+  host = '#FF00FF'
+  path = '#00D7FF'
+  git = '#5FD700'
+  time = '#A8A8A8'
+  jobs = '#00AFAF'
+  date = '#5F8787'
+  csuccess = '#5FAF00'
+  cerror = '#D70000'
+  psuccess = '#5FD700'
+  perror = '#FF0000'
+  pdefault = '#444444'

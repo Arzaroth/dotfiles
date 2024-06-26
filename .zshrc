@@ -7,23 +7,18 @@
 # |_|   |_|   \___/|_|_|_| ||_/ \___)_|\___)____|\____|\____)
 #                        |_|
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 # ssh-agent from wsl
 [ -n "${WSL_AUTH_SOCK}" ] && export SSH_AUTH_SOCK="${WSL_AUTH_SOCK}"
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent quiet yes
 
-setopt RE_MATCH_PCRE   # _fix-omz-plugin function uses this regex style
+setopt re_match_pcre
+setopt extended_glob
 
-# Workaround for zinit issue#504: remove subversion dependency. Function clones all files in plugin
-# directory (on github) that might be useful to zinit snippet directory. Should only be invoked
-# via zinit atclone"_fix-omz-plugin"
+# Workaround for https://github.com/zdharma-continuum/zinit/issues/504
+# Remove subversion dependency. Function clones all files in plugin
+# directory (on github) that might be useful to zinit snippet directory.
+# Should only be invoked via `zi ice atpull"%atclone" atclone"_fix-omz-plugin"`
 _fix-omz-plugin() {
   if [[ ! -f ._zinit/teleid ]] then return 0; fi
   if [[ ! $(cat ._zinit/teleid) =~ "^OMZP::.*" ]] then return 0; fi
@@ -35,10 +30,10 @@ _fix-omz-plugin() {
   cd ..
   local OMZP_PATH="ohmyzsh/plugins/$OMZP_NAME"
   local file
-  for file in $OMZP_PATH/*~(.gitignore|README.md|*.plugin.zsh)(D); do
+  for file in $OMZP_PATH/^(.gitignore|README.md|*.plugin.zsh)(D); do
     local filename="${file:t}"
     echo "Copying $file to $(pwd)/$filename..."
-    cp $file $filename
+    command cp $file $filename
   done
   rm -rf ohmyzsh
 }
@@ -62,19 +57,15 @@ zicompinit
 zi light-mode for \
   zdharma-continuum/zinit-annex-bin-gem-node \
   zdharma-continuum/zinit-annex-patch-dl \
-  z-shell/zsh-fancy-completions \
   wfxr/forgit
 
-zinit wait lucid for \
+zi wait lucid for \
     atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
   zdharma-continuum/fast-syntax-highlighting \
     blockf \
   zsh-users/zsh-completions \
     atload"!_zsh_autosuggest_start" \
   zsh-users/zsh-autosuggestions
-
-zi ice depth=1
-zi light romkatv/powerlevel10k
 
 # Make sure $ZSH_CACHE_DIR is writable, otherwise use a directory in $HOME
 if [[ ! -w "$ZSH_CACHE_DIR" ]]; then
@@ -104,7 +95,7 @@ zi wait lucid for \
   OMZP::debian \
     has'yarn' \
   OMZP::yarn \
-    if'[[ -d ~/.ssh ]]' \
+    if'[[ -d "${HOME}/.ssh" ]]' \
   OMZP::ssh-agent
 
 zi is-snippet wait lucid for \
@@ -113,9 +104,9 @@ zi is-snippet wait lucid for \
    atpull"%atclone" atclone"_fix-omz-plugin" \
  OMZP::colored-man-pages
 
-# zi is-snippet wait lucid for \
-#    has'emacs' nocompile atpull"%atclone" atclone"_fix-omz-plugin" \
-#  OMZP::emacs
+zi is-snippet for \
+   has'emacs' nocompile atpull"%atclone" atclone"_fix-omz-plugin" \
+ OMZP::emacs
 
 zi has'docker' is-snippet wait lucid for \
    atpull"%atclone" atclone"_fix-omz-plugin" \
@@ -128,17 +119,18 @@ zi as'completion' is-snippet wait lucid for \
   OMZP::{fd/_fd,httpie/_httpie,ripgrep/_ripgrep}
 
 zi pack"bgn-binary+keys" multisrc"key-bindings.zsh _fzf_completion" for fzf
+zi as'program' from'gh-r' id-as'JanDeDobbeleer/oh-my-posh' lucid nocompile mv'posh-* -> oh-my-posh' for @JanDeDobbeleer/oh-my-posh
 
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
 [[ ! -f /etc/environment ]] || source /etc/environment
-[[ ! -f ~/.profile ]] || source ~/.profile
-[[ ! -f ~/.shell_aliases ]] || source ~/.shell_aliases
-if [ ! -d ~/.tmux/plugins/tpm ]; then
+[[ ! -f "${HOME}/.profile" ]] || source "${HOME}/.profile"
+[[ ! -f "${HOME}/.shell_aliases" ]] || source "${HOME}/.shell_aliases"
+if [ ! -d "${HOME}/.tmux/plugins/tpm" ]; then
   print -P "%F{33}▓▒░ %F{160}Installing (%F{33}tpm%F{160})…%f"
-  command mkdir -p ~/.tmux/plugins && command chmod g-rwX ~/.tmux/plugins
-  command git clone -q https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && \
+  command mkdir -p "${HOME}/.tmux/plugins" && command chmod g-rwX "${HOME}/.tmux/plugins"
+  command git clone -q https://github.com/tmux-plugins/tpm "${HOME}/.tmux/plugins/tpm" && \
     print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
     print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
@@ -151,5 +143,7 @@ bindkey \^U backward-kill-line
 
 precmd () { echo -n "\x1b]1337;CurrentDir=$(pwd)\x07" }
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+eval "$(oh-my-posh init zsh --config "${HOME}/.promptitude.omp.toml")"
+function set_poshcontext() {
+  export BG_JOBS="$(jobs | wc -l | xargs)"
+}

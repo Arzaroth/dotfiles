@@ -32,7 +32,8 @@ else
 fi
 
 # emacs should never start in a window
-alias emacs="$EMACS_PLUGIN_LAUNCHER -nw"
+alias emacs="te"
+alias ne="te"
 
 alias j='jobs'
 
