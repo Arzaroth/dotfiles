@@ -1,3 +1,0 @@
-[submodule "site-lisp/go-mode"]
-	path = site-lisp/go-mode
-	url = git://github.com/dominikh/go-mode.el.git
