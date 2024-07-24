@@ -116,7 +116,7 @@ zi has'python' is-snippet wait lucid for \
   OMZP::{python,pip,virtualenv}
 
 zi as'completion' is-snippet wait lucid for \
-  OMZP::{fd/_fd,httpie/_httpie,ripgrep/_ripgrep}
+  OMZP::httpie/_httpie
 
 zi pack"bgn-binary+keys" multisrc"key-bindings.zsh _fzf_completion" for fzf
 zi as'program' from'gh-r' id-as'JanDeDobbeleer/oh-my-posh' lucid nocompile mv'posh-* -> oh-my-posh' for @JanDeDobbeleer/oh-my-posh
