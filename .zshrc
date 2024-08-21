@@ -33,7 +33,7 @@ _fix-omz-plugin() {
   for file in $OMZP_PATH/^(.gitignore|README.md|*.plugin.zsh)(D); do
     local filename="${file:t}"
     echo "Copying $file to $(pwd)/$filename..."
-    command cp $file $filename
+    command cp -r $file $filename
   done
   rm -rf ohmyzsh
 }
