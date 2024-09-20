@@ -35,6 +35,13 @@ if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
+# pyenv
+if [ -d "$HOME/.pyenv" ] ; then
+    export PYENV_ROOT="$HOME/.pyenv"
+    [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+    eval "$(pyenv init -)"
+fi
+
 # fzf
 export FZF_DEFAULT_OPTS="
   --no-mouse --height 50% -1 --reverse --multi --inline-info --border
