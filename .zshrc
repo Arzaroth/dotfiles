@@ -20,22 +20,25 @@ setopt extended_glob
 # directory (on github) that might be useful to zinit snippet directory.
 # Should only be invoked via `zi ice atpull"%atclone" atclone"_fix-omz-plugin"`
 _fix-omz-plugin() {
-  if [[ ! -f ._zinit/teleid ]] then return 0; fi
-  if [[ ! $(cat ._zinit/teleid) =~ "^OMZP::.*" ]] then return 0; fi
-  local OMZP_NAME=$(cat ._zinit/teleid | sed -n 's/OMZP:://p')
+  [[ -f ./._zinit/teleid ]] || return 1
+  local teleid="$(<./._zinit/teleid)"
+  local pluginid
+  for pluginid (${teleid#OMZ::plugins/} ${teleid#OMZP::}) {
+    [[ $pluginid != $teleid ]] && break
+  }
+  (($?)) && return 1
+  print "Fixing $teleid..."
   git clone --quiet --no-checkout --depth=1 --filter=tree:0 https://github.com/ohmyzsh/ohmyzsh
-  cd ohmyzsh
-  git sparse-checkout set --no-cone plugins/$OMZP_NAME
+  cd ./ohmyzsh
+  git sparse-checkout set --no-cone /plugins/$pluginid
   git checkout --quiet
   cd ..
-  local OMZP_PATH="ohmyzsh/plugins/$OMZP_NAME"
   local file
-  for file in $OMZP_PATH/^(.gitignore|README.md|*.plugin.zsh)(D); do
-    local filename="${file:t}"
-    echo "Copying $file to $(pwd)/$filename..."
-    command cp -r $file $filename
-  done
-  rm -rf ohmyzsh
+  for file (./ohmyzsh/plugins/$pluginid/*~(.gitignore|*.plugin.zsh)(D)) {
+    print "Copying ${file:t}..."
+    command cp -R $file ./${file:t}
+  }
+  rm -rf ./ohmyzsh
 }
 
 typeset -Ag ZINIT
