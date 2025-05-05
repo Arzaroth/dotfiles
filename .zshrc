@@ -121,7 +121,21 @@ zi has'python' is-snippet wait lucid for \
 zi as'completion' is-snippet wait lucid for \
   OMZP::httpie/_httpie
 
-zi pack"bgn-binary+keys" multisrc"key-bindings.zsh _fzf_completion" for fzf
+zi \
+  as'command' \
+  atclone'mkdir -p $ZPFX/bin; cp -vf fzf $ZPFX/bin' \
+  atpull'%atclone' \
+  dl'https://raw.githubusercontent.com/junegunn/fzf/master/shell/completion.zsh -> _fzf_completion;
+     https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh -> key-bindings.zsh;
+     https://raw.githubusercontent.com/junegunn/fzf/master/man/man1/fzf-tmux.1 -> $ZPFX/man/man1/fzf-tmux.1;
+     https://raw.githubusercontent.com/junegunn/fzf/master/man/man1/fzf.1 -> $ZPFX/man/man1/fzf.1' \
+  from'gh-r' \
+  id-as'junegunn/fzf' \
+  lucid \
+  nocompile \
+  pick'$ZPFX/bin/fzf' \
+  src'key-bindings.zsh' \
+  for @junegunn/fzf
 zi as'program' from'gh-r' id-as'JanDeDobbeleer/oh-my-posh' lucid nocompile mv'posh-* -> oh-my-posh' for @JanDeDobbeleer/oh-my-posh
 
 export LANG=en_US.UTF-8
