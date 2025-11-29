@@ -39,3 +39,6 @@ alias j='jobs'
 
 # rsync > cp
 alias cp='rsync -azvtP'
+
+# docker images analysis
+alias dive="docker run -ti --rm  -v /var/run/docker.sock:/var/run/docker.sock docker.io/wagoodman/dive"
