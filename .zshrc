@@ -162,6 +162,18 @@ bindkey \^U backward-kill-line
 
 precmd () { echo -n "\x1b]1337;CurrentDir=$(pwd)\x07" }
 
+# fzf
+export FZF_DEFAULT_OPTS="
+  --no-mouse --height 50% -1 --reverse --multi --inline-info --border
+  --bind='?:toggle-preview'
+  --bind='ctrl-a:select-all+accept'
+  --bind='ctrl-u:preview-page-up'
+  --bind='ctrl-d:preview-page-down'
+  --preview-window 'right:hidden:wrap'
+  --preview '([[ -d {} ]] && tree {}) || ([[ -f {} ]] && ([[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat --style=numbers --color=always --line-range :300 {} || (cat {} | head -300)) 2>/dev/null)) || echo {}'"
+
+zellij setup --generate-completion zsh > ~/.config/zellij/_zellij
+fpath=(~/.config/zellij $fpath)
 eval "$(oh-my-posh init zsh --config "${HOME}/.promptitude.omp.toml")"
 function set_poshcontext() {
   export BG_JOBS="$(jobs | wc -l | xargs)"
