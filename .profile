@@ -21,7 +21,7 @@
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
     if [ -f "$HOME/.bashrc" ]; then
-         "$HOME/.bashrc"
+         . "$HOME/.bashrc"
     fi
 fi
 
@@ -41,16 +41,6 @@ if [ -d "$HOME/.pyenv" ] ; then
     [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
     eval "$(pyenv init -)"
 fi
-
-# fzf
-export FZF_DEFAULT_OPTS="
-  --no-mouse --height 50% -1 --reverse --multi --inline-info --border
-  --bind='?:toggle-preview'
-  --bind='ctrl-a:select-all+accept'
-  --bind='ctrl-u:preview-page-up'
-  --bind='ctrl-d:preview-page-down'
-  --preview-window 'right:hidden:wrap'
-  --preview '([[ -d {} ]] && tree {}) || ([[ -f {} ]] && ([[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat --style=numbers --color=always --line-range :300 {} || (cat {} | head -300)) 2>/dev/null)) || echo {}'"
 
 export ALTERNATE_EDITOR=""
 export TERM="xterm-256color"
