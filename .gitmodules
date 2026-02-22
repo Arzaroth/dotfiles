@@ -1,7 +1,7 @@
 [submodule ".emacs.d"]
-	path = .emacs.d
+	path = emacs/.emacs.d
 	url = https://github.com/plexus/chemacs2.git
 [submodule ".spacemacs"]
-	path = .spacemacs
+	path = emacs/.spacemacs
 	url = https://github.com/syl20bnr/spacemacs
 	branch = develop
