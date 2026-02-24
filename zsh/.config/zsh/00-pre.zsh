@@ -29,7 +29,6 @@ typeset -gx HISTFILE="${HOME}/.zsh_history"
 # ---- Source environment files ----
 [[ -r /etc/environment ]] && source /etc/environment
 [[ -r "${HOME}/.profile" ]] && source "${HOME}/.profile"
-[[ -r "${HOME}/.shell_aliases" ]] && source "${HOME}/.shell_aliases"
 
 # ---- Current directory reporting ----
 precmd() {
