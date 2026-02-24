@@ -40,3 +40,6 @@ if (( $+commands[oh-my-posh] )); then
 fi
 
 (( $+functions[_zsh_autosuggest_start] )) && _zsh_autosuggest_start
+
+# ---- User aliases ----
+[[ -r "${HOME}/.shell_aliases" ]] && source "${HOME}/.shell_aliases"
