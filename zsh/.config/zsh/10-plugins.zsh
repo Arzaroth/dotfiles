@@ -17,7 +17,15 @@ if [[ ! -r "${ANTIDOTE_HOME}/antidote.zsh" ]]; then
 fi
 
 # ---- Load Antidote ----
-source "${ANTIDOTE_HOME}/antidote.zsh"
+zsh_plugins="${ZDOTDIR:-$HOME}/.zsh_plugins.zsh"
+zsh_plugins_txt="${ZDOTDIR:-$HOME}/.zsh_plugins.txt"
+
+if [[ ! "$zsh_plugins.zwc" -nt "$zsh_plugins_txt" ]] || \
+   [[ ! "$zsh_plugins"     -nt "$zsh_plugins_txt" ]]; then
+  source "${ANTIDOTE_HOME}/antidote.zsh"
+  antidote bundle <"$zsh_plugins_txt" >"$zsh_plugins"
+  zcompile "$zsh_plugins"
+fi
 
 # ---- Load plugins ----
-antidote load "${ZDOTDIR:-$HOME}/.zsh_plugins.txt"
+source "$zsh_plugins"
