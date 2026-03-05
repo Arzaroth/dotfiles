@@ -46,6 +46,3 @@ if (( $+commands[zellij] )); then
 
   unset _zj_ver _zj_cache _zj_stamp
 fi
-
-autoload -Uz compinit
-compinit
