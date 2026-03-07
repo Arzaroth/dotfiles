@@ -32,6 +32,9 @@ zstyle -s ':completion:*:hosts' hosts _ssh_config
 
 zstyle ':completion:*:hosts' hosts $_ssh_config
 
+# ---- OMZ disable update ----
+zstyle ':omz:update' mode disabled
+
 # ---- OMZ ssh-agent plugin styles ----
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent quiet yes
