@@ -39,5 +39,8 @@ zstyle ':omz:update' mode disabled
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 zstyle :omz:plugins:ssh-agent quiet yes
 
+# ---- OMZ disable yarn global bin call ----
+zstyle :omz:plugins:yarn global-path no
+
 # ---- antidote clean names ----
 zstyle ':antidote:bundle' use-friendly-names 'yes'
