@@ -39,6 +39,11 @@ if (( $+commands[oh-my-posh] )); then
   eval "$(oh-my-posh init zsh --config "${XDG_CONFIG_HOME:-$HOME/.config}/oh-my-posh/config.toml")"
 fi
 
+# ---- atuin ----
+if (( $+commands[atuin] )); then
+  eval "$(atuin init zsh --disable-up-arrow)"
+fi
+
 (( $+functions[_zsh_autosuggest_start] )) && _zsh_autosuggest_start
 
 # ---- User aliases ----

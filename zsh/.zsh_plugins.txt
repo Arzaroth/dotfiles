@@ -6,6 +6,9 @@ zsh-users/zsh-completions
 zdharma-continuum/fast-syntax-highlighting kind:defer
 zsh-users/zsh-autosuggestions kind:defer
 
+# ---- Atuin ----
+atuinsh/atuin
+
 # ---- Oh-My-Zsh support ----
 getantidote/use-omz
 
