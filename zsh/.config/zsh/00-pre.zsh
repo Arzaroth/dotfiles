@@ -15,6 +15,7 @@ setopt interactivecomments
 unsetopt beep
 
 bindkey \^U backward-kill-line
+bindkey \^H backward-kill-word
 
 # ---- OMZ knobs ----
 typeset -gx HYPHEN_INSENSITIVE=true
@@ -34,3 +35,7 @@ typeset -gx HISTFILE="${HOME}/.zsh_history"
 precmd() {
   echo -n "\x1b]1337;CurrentDir=$(pwd)\x07"
 }
+
+if [[ -n $GHOSTTY_RESOURCES_DIR ]]; then
+  source "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
+fi
