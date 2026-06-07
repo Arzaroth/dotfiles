@@ -43,7 +43,6 @@ if [ -d "$HOME/.pyenv" ] ; then
 fi
 
 export ALTERNATE_EDITOR=""
-export TERM="xterm-256color"
 export ARCHFLAGS="-arch x86_64"
 
 export FIGNORE=".o:.pyc"
