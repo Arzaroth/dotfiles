@@ -44,6 +44,11 @@ if (( $+commands[atuin] )); then
   eval "$(atuin init zsh --disable-up-arrow)"
 fi
 
+# ---- worktrunk ----
+if (( $+commands[wt] )); then
+  eval "$(wt config shell init zsh)"
+fi
+
 (( $+functions[_zsh_autosuggest_start] )) && _zsh_autosuggest_start
 
 # ---- User aliases ----
