@@ -36,6 +36,6 @@ precmd() {
   echo -n "\x1b]1337;CurrentDir=$(pwd)\x07"
 }
 
-if [[ -n $GHOSTTY_RESOURCES_DIR ]]; then
+if [[ -n $GHOSTTY_RESOURCES_DIR && $TERM == xterm-ghostty && -z $ZELLIJ && -z $TMUX ]]; then
   source "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
 fi

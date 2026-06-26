@@ -10,6 +10,9 @@
 [[ -z "$LS_COLORS" ]] || \
   zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
+zmodload zsh/complist
+bindkey -M menuselect '^[[Z' reverse-menu-complete
+
 # ---- SSH completion tweaks ----
 zstyle ':completion:*:(ssh|scp|ftp|sftp):*' hosts $hosts
 zstyle ':completion:*:(ssh|scp|ftp|sftp):*' users $users

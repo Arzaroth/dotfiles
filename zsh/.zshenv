@@ -10,5 +10,10 @@
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
+# Multiplexer TERM fix.
+if [[ -n $ZELLIJ || -n $TMUX ]] && [[ $TERM == xterm-ghostty ]]; then
+  export TERM=xterm-256color
+fi
+
 # WSL ssh-agent forwarding
 [[ -n "${WSL_AUTH_SOCK}" ]] && export SSH_AUTH_SOCK="${WSL_AUTH_SOCK}"
