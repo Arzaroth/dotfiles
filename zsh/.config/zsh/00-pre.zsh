@@ -31,10 +31,13 @@ typeset -gx HISTFILE="${HOME}/.zsh_history"
 [[ -r /etc/environment ]] && source /etc/environment
 [[ -r "${HOME}/.profile" ]] && source "${HOME}/.profile"
 
-# ---- Current directory reporting ----
-precmd() {
-    echo -n "\x1b]1337;CurrentDir=$(pwd)\x07"
+# ---- Current directory reporting (OSC 1337) ----
+autoload -Uz add-zsh-hook
+
+_report_cwd() {
+    print -n "\e]1337;CurrentDir=${PWD}\a"
 }
+add-zsh-hook precmd _report_cwd
 
 if [[ -n $GHOSTTY_RESOURCES_DIR && $TERM == xterm-ghostty && -z $ZELLIJ && -z $TMUX ]]; then
     source "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
