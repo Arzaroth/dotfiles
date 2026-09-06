@@ -17,9 +17,6 @@ mkdir -p "$ZSH_CACHE_DIR/completions"
 
 # ---- zellij completion ----
 if (( $+commands[zellij] )); then
-    mkdir -p "$ZSH_CACHE_DIR/completions"
-    (( ${fpath[(Ie)"$ZSH_CACHE_DIR/completions"]} )) || fpath=("$ZSH_CACHE_DIR/completions" $fpath)
-
     local _zj_ver _zj_cache _zj_stamp
     _zj_ver="$(zellij --version 2>/dev/null | awk '{print $NF}')"
     _zj_cache="$ZSH_CACHE_DIR/completions/_zellij"
