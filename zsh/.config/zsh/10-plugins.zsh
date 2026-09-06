@@ -20,12 +20,25 @@ fi
 zsh_plugins="${ZDOTDIR:-$HOME}/.zsh_plugins.zsh"
 zsh_plugins_txt="${ZDOTDIR:-$HOME}/.zsh_plugins.txt"
 
+# Regenerate the bundle whenever the plugin list is newer than the generated
+# file or its compiled form. Generation goes to a temporary file and is
+# committed with mv, so a failed run leaves the previous working bundle in
+# place rather than an empty one that would still look up to date.
 if [[ ! "$zsh_plugins.zwc" -nt "$zsh_plugins_txt" ]] || \
    [[ ! "$zsh_plugins"     -nt "$zsh_plugins_txt" ]]; then
-    source "${ANTIDOTE_HOME}/antidote.zsh"
-    antidote bundle <"$zsh_plugins_txt" >"$zsh_plugins"
-    zcompile "$zsh_plugins"
+    zsh_plugins_tmp="${zsh_plugins}.$$.tmp"
+    if source "${ANTIDOTE_HOME}/antidote.zsh" && \
+       antidote bundle <"$zsh_plugins_txt" >| "$zsh_plugins_tmp"; then
+        command mv -f "$zsh_plugins_tmp" "$zsh_plugins"
+        zcompile "$zsh_plugins"
+    else
+        command rm -f "$zsh_plugins_tmp"
+        print -ru2 -- "zsh: antidote could not regenerate ${zsh_plugins}"
+    fi
+    unset zsh_plugins_tmp
 fi
 
 # ---- Load plugins ----
-source "$zsh_plugins"
+[[ -r "$zsh_plugins" ]] && source "$zsh_plugins"
+
+unset zsh_plugins zsh_plugins_txt
