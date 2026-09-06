@@ -7,12 +7,18 @@
 # |_|   |_|   \___/|_|_|_| ||_/ \___)_|\___)____|\____|\____)
 #                        |_|
 
-if [ -x "$(command -v lsd)" ]; then
+# `command -v` prints a bare name for functions, aliases and builtins, which is
+# not a path, so testing its output with -x misses them.
+_have() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+if _have lsd; then
     alias ls="lsd"
     alias ll="lsd -l"
     alias la="lsd -a"
     alias l="lsd -F"
-elif [ -x "$(command -v exa)" ]; then
+elif _have exa; then
     alias ls="exa"
     alias ll="exa -lgh"
     alias la="exa -lgha"
@@ -24,7 +30,7 @@ else
     alias l='ls -CF'
 fi
 
-if [ -x "$(command -v bat)" ]; then
+if _have bat; then
     alias cat='bat --paging=never'
     alias less='bat --paging=always'
 else
@@ -37,8 +43,12 @@ alias ne="te"
 
 alias j='jobs'
 
-# rsync > cp
-alias cp='rsync -azvtP'
+# rsync-backed copy. Deliberately not aliased over cp: rsync treats trailing
+# slashes differently, takes different flags, and would silently change the
+# meaning of every existing cp invocation and script habit.
+alias rcp='rsync -azvtP'
 
 # docker images analysis
 alias dive="docker run -ti --rm  -v /var/run/docker.sock:/var/run/docker.sock docker.io/wagoodman/dive"
+
+unset -f _have
