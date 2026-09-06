@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `make skel` and `make skel-clean`, stowing into `/etc/skel` for new accounts;
+  both refuse to run outside `/etc/skel/dotfiles`.
+
 ## [1.2.0] - 2026-09-07
 
 ### Added

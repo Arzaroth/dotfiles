@@ -41,3 +41,17 @@ Re-link (restow everything):
 ```sh
 make restow
 ```
+
+## New accounts
+
+Clone the repository to `/etc/skel/dotfiles`, then stow into `/etc/skel` itself:
+
+```sh
+sudo make skel
+```
+
+`make skel` refuses to run from any other location: the symlinks it creates are
+relative to the checkout (`.zshrc -> dotfiles/zsh/.zshrc`), so they only resolve
+once `useradd` has copied both the links and `dotfiles/` into the new home.
+
+`make skel-clean` removes them again.
