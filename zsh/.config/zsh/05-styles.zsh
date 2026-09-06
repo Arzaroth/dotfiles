@@ -8,7 +8,7 @@
 
 # ---- Completion UI ----
 [[ -z "$LS_COLORS" ]] || \
-  zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+    zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 zmodload zsh/complist
 bindkey -M menuselect '^[[Z' reverse-menu-complete
@@ -17,21 +17,21 @@ bindkey -M menuselect '^[[Z' reverse-menu-complete
 zstyle ':completion:*:(ssh|scp|ftp|sftp):*' hosts $hosts
 zstyle ':completion:*:(ssh|scp|ftp|sftp):*' users $users
 zstyle ':completion:*:(scp|rsync):*' tag-order \
-  ' hosts:-ipaddr:ip\ address hosts:-host:host files'
+    ' hosts:-ipaddr:ip\ address hosts:-host:host files'
 
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' \
-  ignored-patterns '*(.|:)*' loopback ip6-loopback localhost \
-  ip6-localhost broadcasthost
+    ignored-patterns '*(.|:)*' loopback ip6-loopback localhost \
+    ip6-localhost broadcasthost
 
 zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' \
-  ignored-patterns \
-  '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' \
-  '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
+    ignored-patterns \
+    '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' \
+    '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 
 zstyle ':completion:*' hosts off
 zstyle -s ':completion:*:hosts' hosts _ssh_config
 [[ -r ~/.ssh/config ]] && \
-  _ssh_config+=($(sed -ne 's/Host[=\t ]//p' ~/.ssh/config))
+    _ssh_config+=($(sed -ne 's/Host[=\t ]//p' ~/.ssh/config))
 
 zstyle ':completion:*:hosts' hosts $_ssh_config
 

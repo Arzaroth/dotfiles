@@ -12,13 +12,13 @@
 ZSH_CFG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 
 for f in \
-  "$ZSH_CFG_DIR/00-pre.zsh" \
-  "$ZSH_CFG_DIR/05-styles.zsh" \
-  "$ZSH_CFG_DIR/10-plugins.zsh" \
-  "$ZSH_CFG_DIR/20-completion.zsh" \
-  "$ZSH_CFG_DIR/90-post.zsh"
+    "$ZSH_CFG_DIR/00-pre.zsh" \
+    "$ZSH_CFG_DIR/05-styles.zsh" \
+    "$ZSH_CFG_DIR/10-plugins.zsh" \
+    "$ZSH_CFG_DIR/20-completion.zsh" \
+    "$ZSH_CFG_DIR/90-post.zsh"
 do
-  [[ -r "$f" ]] && source "$f"
+    [[ -r "$f" ]] && source "$f"
 done
 
 unset ZSH_CFG_DIR

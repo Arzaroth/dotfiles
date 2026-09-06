@@ -8,41 +8,41 @@
 
 # ---- Cache directory ----
 if [[ -z "$ZSH_CACHE_DIR" || ! -w "$ZSH_CACHE_DIR" ]]; then
-  ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"
+    ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oh-my-zsh"
 fi
 
 mkdir -p "$ZSH_CACHE_DIR/completions"
 (( ${fpath[(Ie)"$ZSH_CACHE_DIR/completions"]} )) || \
-  fpath=("$ZSH_CACHE_DIR/completions" $fpath)
+    fpath=("$ZSH_CACHE_DIR/completions" $fpath)
 
 # ---- zellij completion ----
 if (( $+commands[zellij] )); then
-  mkdir -p "$ZSH_CACHE_DIR/completions"
-  (( ${fpath[(Ie)"$ZSH_CACHE_DIR/completions"]} )) || fpath=("$ZSH_CACHE_DIR/completions" $fpath)
+    mkdir -p "$ZSH_CACHE_DIR/completions"
+    (( ${fpath[(Ie)"$ZSH_CACHE_DIR/completions"]} )) || fpath=("$ZSH_CACHE_DIR/completions" $fpath)
 
-  local _zj_ver _zj_cache _zj_stamp
-  _zj_ver="$(zellij --version 2>/dev/null | awk '{print $NF}')"
-  _zj_cache="$ZSH_CACHE_DIR/completions/_zellij"
-  _zj_stamp="$ZSH_CACHE_DIR/completions/.zellij-version"
+    local _zj_ver _zj_cache _zj_stamp
+    _zj_ver="$(zellij --version 2>/dev/null | awk '{print $NF}')"
+    _zj_cache="$ZSH_CACHE_DIR/completions/_zellij"
+    _zj_stamp="$ZSH_CACHE_DIR/completions/.zellij-version"
 
-  if [[ ! -s "$_zj_cache" || ! -r "$_zj_stamp" || "$(<"$_zj_stamp")" != "$_zj_ver" ]]; then
-    if [[ ! -s "$_zj_cache" ]]; then
-      autoload -Uz _zellij
-      typeset -g -A _comps
-      _comps[zellij]=_zellij
+    if [[ ! -s "$_zj_cache" || ! -r "$_zj_stamp" || "$(<"$_zj_stamp")" != "$_zj_ver" ]]; then
+        if [[ ! -s "$_zj_cache" ]]; then
+            autoload -Uz _zellij
+            typeset -g -A _comps
+            _comps[zellij]=_zellij
+        fi
+
+        (
+            umask 022
+            local tmp="${_zj_cache}.$$.tmp"
+            if zellij setup --generate-completion zsh >| "$tmp" 2>/dev/null; then
+                mv -f "$tmp" "$_zj_cache"
+                print -r -- "$_zj_ver" >| "$_zj_stamp"
+            else
+                rm -f "$tmp"
+            fi
+        ) &|
     fi
 
-    (
-      umask 022
-      local tmp="${_zj_cache}.$$.tmp"
-      if zellij setup --generate-completion zsh >| "$tmp" 2>/dev/null; then
-        mv -f "$tmp" "$_zj_cache"
-        print -r -- "$_zj_ver" >| "$_zj_stamp"
-      else
-        rm -f "$tmp"
-      fi
-    ) &|
-  fi
-
-  unset _zj_ver _zj_cache _zj_stamp
+    unset _zj_ver _zj_cache _zj_stamp
 fi

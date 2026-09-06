@@ -12,7 +12,7 @@ export LC_ALL=en_US.UTF-8
 
 # Multiplexer TERM fix.
 if [[ -n $ZELLIJ || -n $TMUX ]] && [[ $TERM == xterm-ghostty ]]; then
-  export TERM=xterm-256color
+    export TERM=xterm-256color
 fi
 
 # WSL ssh-agent forwarding
