@@ -25,22 +25,32 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 fi
 
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ]; then
-    PATH="$HOME/bin:$PATH"
-fi
+# Prepend a directory to PATH, if it exists and is not already listed.
+# This file is sourced by every interactive Zsh (see .config/zsh/00-pre.zsh),
+# so the additions below have to be idempotent.
+prepend_path() {
+    [ -d "$1" ] || return 0
+    case ":$PATH:" in
+        *":$1:"*) ;;
+        *) PATH="$1:$PATH" ;;
+    esac
+}
 
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/.local/bin" ]; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
+# user's private bins
+prepend_path "$HOME/bin"
+prepend_path "$HOME/.local/bin"
 
 # pyenv
 if [ -d "$HOME/.pyenv" ]; then
     export PYENV_ROOT="$HOME/.pyenv"
-    [ -d "$PYENV_ROOT/bin" ] && export PATH="$PYENV_ROOT/bin:$PATH"
-    eval "$(pyenv init -)"
+    prepend_path "$PYENV_ROOT/bin"
+    if command -v pyenv >/dev/null 2>&1; then
+        eval "$(pyenv init -)"
+    fi
 fi
+
+unset -f prepend_path
+export PATH
 
 export ALTERNATE_EDITOR=""
 export ARCHFLAGS="-arch x86_64"
