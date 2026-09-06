@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  SHELLCHECK_VERSION: v0.11.0
+  SHFMT_VERSION: v3.14.1
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install ShellCheck
+        run: |
+          set -euo pipefail
+          curl -fsSL "https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK_VERSION}/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz" | tar -xJ
+          sudo install -m 0755 "shellcheck-${SHELLCHECK_VERSION}/shellcheck" /usr/local/bin/shellcheck
+
+      - name: Lint shell package
+        run: |
+          set -euo pipefail
+          git ls-files shell | tee /dev/stderr | xargs shellcheck
+
+  shfmt:
+    name: Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install shfmt
+        run: |
+          set -euo pipefail
+          curl -fsSLo /tmp/shfmt "https://github.com/mvdan/sh/releases/download/${SHFMT_VERSION}/shfmt_${SHFMT_VERSION}_linux_amd64"
+          sudo install -m 0755 /tmp/shfmt /usr/local/bin/shfmt
+
+      - name: Check shell formatting
+        run: |
+          set -euo pipefail
+          git ls-files shell | xargs shfmt --diff
+
+  zsh-syntax:
+    name: Zsh syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Zsh
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends zsh
+
+      - name: Parse Zsh files
+        run: |
+          set -euo pipefail
+          git ls-files zsh | grep -E '(\.zsh|/\.zshrc|/\.zshenv)$' | while read -r file; do
+            echo "zsh -n $file"
+            zsh -n "$file"
+          done
+
+  stow:
+    name: Stow deployment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install GNU Stow
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends stow
+
+      - name: Simulate deployment
+        run: |
+          set -euo pipefail
+          target="$RUNNER_TEMP/home"
+          mkdir -p "$target"
+          stow --no --verbose --target "$target" $(make list)
