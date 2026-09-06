@@ -6,15 +6,6 @@
 # |_|   |_|   \___/|_|_|_| ||_/ \___)_|\___)____|\____|\____)
 #                        |_|
 
-# ---- tmux TPM bootstrap ----
-if [[ ! -d "${HOME}/.tmux/plugins/tpm" ]]; then
-    print -P "%F{33}▓▒░ %F{160}Installing (%F{33}tpm%F{160})…%f"
-    command mkdir -p "${HOME}/.tmux/plugins"
-    command chmod g-rwX "${HOME}/.tmux/plugins"
-    command git clone -q https://github.com/tmux-plugins/tpm \
-        "${HOME}/.tmux/plugins/tpm"
-fi
-
 # ---- fzf ----
 if (( $+commands[fzf] )); then
     eval "$(fzf --zsh)"

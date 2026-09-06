@@ -19,6 +19,17 @@ Each directory is a Stow package.
 
 ## Deployment
 
+First, fetch the submodules and the plugin managers the shells expect
+(Antidote for Zsh, tpm for tmux):
+
+```sh
+make bootstrap
+```
+
+This is deliberately a Make target rather than something the shell startup
+files do on their own: a login shell should not block on the network, and a
+half-finished clone should not leave the shell broken. It is safe to re-run.
+
 Deploy all packages:
 
 ```sh
