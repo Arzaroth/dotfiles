@@ -1,0 +1,25 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[Makefile]
+indent_style = tab
+
+[*.{yml,yaml}]
+indent_size = 2
+
+[{.bashrc,.bash_logout}]
+shell_variant = bash
+binary_next_line = true
+switch_case_indent = true
+
+[{.profile,.shell_aliases}]
+shell_variant = posix
+binary_next_line = true
+switch_case_indent = true
