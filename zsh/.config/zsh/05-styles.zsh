@@ -14,8 +14,6 @@ zmodload zsh/complist
 bindkey -M menuselect '^[[Z' reverse-menu-complete
 
 # ---- SSH completion tweaks ----
-zstyle ':completion:*:(ssh|scp|ftp|sftp):*' hosts $hosts
-zstyle ':completion:*:(ssh|scp|ftp|sftp):*' users $users
 zstyle ':completion:*:(scp|rsync):*' tag-order \
     ' hosts:-ipaddr:ip\ address hosts:-host:host files'
 
@@ -28,12 +26,17 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' \
     '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' \
     '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 
+# Complete hosts from ~/.ssh/config only; the default sources (known_hosts,
+# /etc/hosts) are noisy and go stale.
 zstyle ':completion:*' hosts off
-zstyle -s ':completion:*:hosts' hosts _ssh_config
-[[ -r ~/.ssh/config ]] && \
-    _ssh_config+=($(sed -ne 's/Host[=\t ]//p' ~/.ssh/config))
 
-zstyle ':completion:*:hosts' hosts $_ssh_config
+if [[ -r ~/.ssh/config ]]; then
+    ssh_hosts=(${(f)"$(sed -nE 's/^[[:space:]]*[Hh]ost[[:space:]=]+(.*)$/\1/p' ~/.ssh/config)"})
+    ssh_hosts=(${=ssh_hosts})           # split multi-host Host lines
+    ssh_hosts=(${ssh_hosts:#*[*?]*})    # drop wildcard patterns
+    zstyle ':completion:*:hosts' hosts $ssh_hosts
+    unset ssh_hosts
+fi
 
 # ---- OMZ disable update ----
 zstyle ':omz:update' mode disabled
