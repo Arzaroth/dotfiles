@@ -29,7 +29,7 @@ jobs:
       - name: Lint shell package
         run: |
           set -euo pipefail
-          git ls-files shell | tee /dev/stderr | xargs shellcheck
+          git ls-files shell | xargs shellcheck
 
   shfmt:
     name: Formatting
@@ -86,3 +86,70 @@ jobs:
           target="$RUNNER_TEMP/home"
           mkdir -p "$target"
           stow --no --verbose --target "$target" $(make list)
+
+  smoke:
+    name: Interactive shell
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Zsh and GNU Stow
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends zsh stow
+
+      - name: Deploy into a throwaway HOME
+        run: |
+          set -euo pipefail
+          target="$RUNNER_TEMP/home"
+          mkdir -p "$target/bin" "$target/.local/bin"
+          stow --target "$target" $(make list)
+
+      # Stand in for Antidote rather than running `make bootstrap`, so the job
+      # exercises this repository's startup files without cloning every
+      # third-party plugin on every run.
+      - name: Stub out Antidote
+        run: |
+          set -euo pipefail
+          target="$RUNNER_TEMP/home"
+          mkdir -p "$target/.antidote"
+          printf 'antidote() { : }\n' > "$target/.antidote/antidote.zsh"
+
+      - name: Start an interactive shell
+        run: |
+          set -euo pipefail
+          target="$RUNNER_TEMP/home"
+          HOME="$target" ZDOTDIR="$target" zsh -d -i -c exit 2>"$RUNNER_TEMP/stderr.log"
+          # `zsh -i` without a terminal cannot enable ZLE, so anything
+          # installing line-editor widgets complains. That is an artefact of
+          # running headless, not a fault in these files.
+          grep -v "can't change option: zle" "$RUNNER_TEMP/stderr.log" \
+            > "$RUNNER_TEMP/unexpected.log" || true
+          if [ -s "$RUNNER_TEMP/unexpected.log" ]; then
+            echo "interactive startup wrote to stderr:" >&2
+            cat "$RUNNER_TEMP/unexpected.log" >&2
+            exit 1
+          fi
+
+      - name: PATH must not grow in nested shells
+        run: |
+          set -euo pipefail
+          target="$RUNNER_TEMP/home"
+          run() { HOME="$target" ZDOTDIR="$target" zsh -d -i -c "$1" 2>/dev/null; }
+          outer=$(run 'print -r -- $PATH')
+          inner=$(run 'zsh -d -i -c "print -r -- \$PATH"')
+          if [ "$outer" != "$inner" ]; then
+            printf 'outer: %s\ninner: %s\n' "$outer" "$inner" >&2
+            exit 1
+          fi
+
+      - name: A failed bundle regeneration must keep the working bundle
+        run: |
+          set -euo pipefail
+          target="$RUNNER_TEMP/home"
+          printf 'GOOD=1\n' > "$target/.zsh_plugins.zsh"
+          touch -d '2000-01-01' "$target/.zsh_plugins.zsh"
+          printf 'antidote() { return 1 }\n' > "$target/.antidote/antidote.zsh"
+          HOME="$target" ZDOTDIR="$target" zsh -d -i -c exit 2>/dev/null || true
+          grep -q 'GOOD=1' "$target/.zsh_plugins.zsh"
