@@ -11,6 +11,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `make skel` and `make skel-clean`, stowing into `/etc/skel` for new accounts;
   both refuse to run outside `/etc/skel/dotfiles`.
+- `make bootstrap`, fetching the submodules, Antidote and tpm. Previously the
+  submodule checkout was documented nowhere and the two plugin managers were
+  cloned from the interactive startup files.
+- CI job that stows into a throwaway `HOME` and starts a real interactive Zsh,
+  asserting it is silent on stderr, that `PATH` does not grow in nested
+  shells, and that a failed plugin-bundle regeneration keeps the previous
+  bundle.
+- `rcp`, the rsync-backed copy previously aliased over `cp`.
+
+### Changed
+
+- Zsh files re-indented to 4 spaces, matching the `.editorconfig` rule they
+  had been contradicting.
+- Antidote and tpm are installed by `make bootstrap` rather than by the
+  interactive startup files, keeping network access off the shell startup path.
+- Bash loads `.shell_aliases`; it previously looked for a `.bash_aliases` this
+  repository does not ship, so none of these aliases reached Bash.
+- The OSC 1337 directory report is registered with `add-zsh-hook` instead of a
+  bare `precmd`, so a plugin defining its own `precmd` no longer silently
+  replaces it, and reads `$PWD` rather than forking `pwd` on every prompt.
+- SSH host completion is built from `~/.ssh/config` as a proper array;
+  multi-host `Host` lines are split and wildcard patterns dropped.
+
+### Removed
+
+- `.stow-local-ignore`, which had no effect: Stow reads it only from the top
+  level of a package, never from the stow directory root.
+- Completion styles referencing `$hosts` and `$users`, variables that were
+  never assigned.
+- Duplicated `mkdir`/`fpath` guard in the completion fragment.
+- `LC_ALL`, which overrode every `LC_*` category and made per-machine settings
+  such as `LC_TIME` impossible. `LANG` alone provides the default.
+- The `cp` alias. Aliasing `cp` to rsync silently changed the semantics of a
+  POSIX tool; the same command is available as `rcp`.
+
+### Fixed
+
+- `.profile` prepended to `PATH` unconditionally while being sourced by every
+  interactive Zsh, so each nested shell duplicated its entries.
+- `pyenv init` ran whenever `~/.pyenv` existed, printing
+  `pyenv: command not found` when the directory held no usable binary.
+- A failed Antidote run truncated `.zsh_plugins.zsh` and left it newer than the
+  plugin list, so the freshness check passed forever and every later shell
+  started with no plugins and never retried. Generation is now written to a
+  temporary file and committed with `mv`.
+- Tool detection in `.shell_aliases` used `[ -x "$(command -v x)" ]`, which
+  fails for functions, aliases and builtins.
 
 ## [1.2.0] - 2026-09-07
 
