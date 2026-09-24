@@ -138,6 +138,18 @@ jobs:
             *) printf 'expected antidote to be a function, got:\n%s\n' "$out" >&2; exit 1 ;;
           esac
 
+      - name: An interactive shell keeps the PATH it inherits
+        run: |
+          set -euo pipefail
+          target="$RUNNER_TEMP/home"
+          extra="$RUNNER_TEMP/inherited"
+          mkdir -p "$extra"
+          out=$(PATH="$extra:$PATH" HOME="$target" ZDOTDIR="$target" zsh -d -i -c 'print -r -- $PATH' 2>/dev/null)
+          case ":$out:" in
+            *":$extra:"*) ;;
+            *) printf 'inherited PATH entry lost: %s\n' "$out" >&2; exit 1 ;;
+          esac
+
       - name: Sourcing .profile twice must not change PATH
         run: |
           set -euo pipefail
