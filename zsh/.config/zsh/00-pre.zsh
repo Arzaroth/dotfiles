@@ -27,8 +27,7 @@ typeset -gx HISTSIZE=50000000
 typeset -gx SAVEHIST=10000000
 typeset -gx HISTFILE="${HOME}/.zsh_history"
 
-# ---- Source environment files ----
-[[ -r /etc/environment ]] && source /etc/environment
+# ---- Source the shared profile ----
 [[ -r "${HOME}/.profile" ]] && source "${HOME}/.profile"
 
 autoload -Uz add-zsh-hook
