@@ -28,13 +28,17 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' \
 
 zstyle ':completion:*' hosts off
 
+_ssh_config_concrete_hosts() {
+    local -a hosts
+    hosts=(${=${(f)"$(sed -nE 's/^[[:space:]]*[Hh]ost[[:space:]=]+(.*)$/\1/p' ~/.ssh/config)"}})
+    reply=(${hosts:#*[*?]*})
+}
+
 if [[ -r ~/.ssh/config ]]; then
-    ssh_hosts=(${(f)"$(sed -nE 's/^[[:space:]]*[Hh]ost[[:space:]=]+(.*)$/\1/p' ~/.ssh/config)"})
-    ssh_hosts=(${=ssh_hosts})
-    ssh_hosts=(${ssh_hosts:#*[*?]*})
-    zstyle ':completion:*:hosts' hosts $ssh_hosts
-    unset ssh_hosts
+    _ssh_config_concrete_hosts
+    zstyle ':completion:*:hosts' hosts $reply
 fi
+unfunction _ssh_config_concrete_hosts
 
 # ---- OMZ disable update ----
 zstyle ':omz:update' mode disabled
