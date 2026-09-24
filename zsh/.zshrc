@@ -9,7 +9,7 @@
 
 [[ -o interactive ]] || return
 
-ZSH_CFG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
+ZSH_CFG_DIR="${${(%):-%x}:h}/.config/zsh"
 
 for f in \
     "$ZSH_CFG_DIR/00-pre.zsh" \

@@ -27,7 +27,7 @@ fi
 
 # ---- oh-my-posh ----
 if (( $+commands[oh-my-posh] )); then
-    eval "$(oh-my-posh init zsh --config "${XDG_CONFIG_HOME:-$HOME/.config}/oh-my-posh/config.toml")"
+    eval "$(oh-my-posh init zsh --config "${HOME}/.config/oh-my-posh/config.toml")"
 fi
 
 # ---- atuin ----
