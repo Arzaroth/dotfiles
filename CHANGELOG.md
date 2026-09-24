@@ -18,7 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   asserting it is silent on stderr, that `PATH` does not grow in nested
   shells, and that a failed plugin-bundle regeneration keeps the previous
   bundle.
-- `rcp`, the rsync-backed copy previously aliased over `cp`.
 
 ### Changed
 
@@ -43,8 +42,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Duplicated `mkdir`/`fpath` guard in the completion fragment.
 - `LC_ALL`, which overrode every `LC_*` category and made per-machine settings
   such as `LC_TIME` impossible. `LANG` alone provides the default.
-- The `cp` alias. Aliasing `cp` to rsync silently changed the semantics of a
-  POSIX tool; the same command is available as `rcp`.
 
 ### Fixed
 

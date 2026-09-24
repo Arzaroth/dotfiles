@@ -43,10 +43,8 @@ alias ne="te"
 
 alias j='jobs'
 
-# rsync-backed copy. Deliberately not aliased over cp: rsync treats trailing
-# slashes differently, takes different flags, and would silently change the
-# meaning of every existing cp invocation and script habit.
-alias rcp='rsync -azvtP'
+# rsync > cp
+alias cp='rsync -azvtP'
 
 # docker images analysis
 alias dive="docker run -ti --rm  -v /var/run/docker.sock:/var/run/docker.sock docker.io/wagoodman/dive"
