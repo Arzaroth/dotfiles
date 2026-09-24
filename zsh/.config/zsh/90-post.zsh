@@ -6,6 +6,10 @@
 # |_|   |_|   \___/|_|_|_| ||_/ \___)_|\___)____|\____|\____)
 #                        |_|
 
+# ---- History ----
+unsetopt share_history
+setopt inc_append_history_time
+
 # ---- fzf ----
 if (( $+commands[fzf] )); then
     eval "$(fzf --zsh)"
