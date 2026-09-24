@@ -47,6 +47,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- With `XDG_CONFIG_HOME` pointing anywhere but `~/.config`, `.zshrc` found none
+  of its fragments and the shell started without any of this configuration.
+  Fragments are now found next to `.zshrc`, and the oh-my-posh config under
+  `~/.config`, where Stow puts them.
+- Every interactive Zsh re-sourced `/etc/environment`, which on Debian and
+  Ubuntu resets `PATH`, so new shells lost an activated virtualenv, `mise`
+  shims or anything else they inherited. PAM already applies the file at
+  login.
 - The `antidote` command was only defined while the plugin bundle was being
   regenerated, so `antidote update` could not be run from a normal shell.
 - `.profile` prepended to `PATH` unconditionally while being sourced by every
