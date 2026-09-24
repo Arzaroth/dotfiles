@@ -132,8 +132,11 @@ jobs:
         run: |
           set -euo pipefail
           target="$RUNNER_TEMP/home"
-          HOME="$target" ZDOTDIR="$target" zsh -d -i -c 'whence -w antidote' 2>/dev/null \
-            | grep -q 'antidote: function'
+          out=$(HOME="$target" ZDOTDIR="$target" zsh -d -i -c 'whence -w antidote' 2>&1) || true
+          case "$out" in
+            *'antidote: function'*) ;;
+            *) printf 'expected antidote to be a function, got:\n%s\n' "$out" >&2; exit 1 ;;
+          esac
 
       - name: PATH must not grow in nested shells
         run: |
