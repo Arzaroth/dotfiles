@@ -138,17 +138,17 @@ jobs:
             *) printf 'expected antidote to be a function, got:\n%s\n' "$out" >&2; exit 1 ;;
           esac
 
-      - name: PATH must not grow in nested shells
+      - name: Sourcing .profile twice must not change PATH
         run: |
           set -euo pipefail
           target="$RUNNER_TEMP/home"
-          run() { HOME="$target" ZDOTDIR="$target" zsh -d -i -c "$1" 2>/dev/null; }
-          outer=$(run 'print -r -- $PATH')
-          inner=$(run 'zsh -d -i -c "print -r -- \$PATH"')
-          if [ "$outer" != "$inner" ]; then
-            printf 'outer: %s\ninner: %s\n' "$outer" "$inner" >&2
-            exit 1
-          fi
+          for sh in sh bash zsh; do
+            HOME="$target" PATH=/usr/bin:/bin "$sh" -c '
+              . "$HOME/.profile"; first=$PATH
+              . "$HOME/.profile"
+              [ "$first" = "$PATH" ] || { printf "%s: %s\n" "$0" "$PATH" >&2; exit 1; }
+            '
+          done
 
       - name: A failed bundle regeneration must keep the working bundle
         run: |
