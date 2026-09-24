@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Zsh history is written as each command finishes (`INC_APPEND_HISTORY_TIME`),
+  so elapsed times are recorded and history survives without atuin.
+  `SHARE_HISTORY` is off: running shells no longer pick up each other's
+  commands until a new shell starts.
 - Zsh files re-indented to 4 spaces, matching the `.editorconfig` rule they
   had been contradicting.
 - Antidote and tpm are cloned into a temporary directory and moved into place
