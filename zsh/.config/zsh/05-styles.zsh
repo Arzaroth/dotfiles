@@ -26,14 +26,12 @@ zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' \
     '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' \
     '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 
-# Complete hosts from ~/.ssh/config only; the default sources (known_hosts,
-# /etc/hosts) are noisy and go stale.
 zstyle ':completion:*' hosts off
 
 if [[ -r ~/.ssh/config ]]; then
     ssh_hosts=(${(f)"$(sed -nE 's/^[[:space:]]*[Hh]ost[[:space:]=]+(.*)$/\1/p' ~/.ssh/config)"})
-    ssh_hosts=(${=ssh_hosts})           # split multi-host Host lines
-    ssh_hosts=(${ssh_hosts:#*[*?]*})    # drop wildcard patterns
+    ssh_hosts=(${=ssh_hosts})
+    ssh_hosts=(${ssh_hosts:#*[*?]*})
     zstyle ':completion:*:hosts' hosts $ssh_hosts
     unset ssh_hosts
 fi

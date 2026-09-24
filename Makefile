@@ -9,9 +9,6 @@ TPM := $(HOME)/.tmux/plugins/tpm
 
 .PHONY: deploy restow clean list skel skel-clean check-skel bootstrap submodules
 
-# Fetch everything the shells expect to already be on disk. Kept out of the
-# interactive rc files so that a failed clone cannot leave a shell in a broken
-# state, and so a login shell never blocks on the network.
 bootstrap: submodules $(ANTIDOTE) $(TPM)
 
 submodules:

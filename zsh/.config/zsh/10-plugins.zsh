@@ -17,10 +17,6 @@ fi
 zsh_plugins="${ZDOTDIR:-$HOME}/.zsh_plugins.zsh"
 zsh_plugins_txt="${ZDOTDIR:-$HOME}/.zsh_plugins.txt"
 
-# Regenerate the bundle whenever the plugin list is newer than the generated
-# file or its compiled form. Generation goes to a temporary file and is
-# committed with mv, so a failed run leaves the previous working bundle in
-# place rather than an empty one that would still look up to date.
 if [[ ! "$zsh_plugins.zwc" -nt "$zsh_plugins_txt" ]] || \
    [[ ! "$zsh_plugins"     -nt "$zsh_plugins_txt" ]]; then
     zsh_plugins_tmp="${zsh_plugins}.$$.tmp"

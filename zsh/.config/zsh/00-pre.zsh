@@ -31,7 +31,6 @@ typeset -gx HISTFILE="${HOME}/.zsh_history"
 [[ -r /etc/environment ]] && source /etc/environment
 [[ -r "${HOME}/.profile" ]] && source "${HOME}/.profile"
 
-# ---- Current directory reporting (OSC 1337) ----
 autoload -Uz add-zsh-hook
 
 _report_cwd() {

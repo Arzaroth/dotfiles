@@ -25,9 +25,6 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 fi
 
-# Prepend a directory to PATH, if it exists and is not already listed.
-# This file is sourced by every interactive Zsh (see .config/zsh/00-pre.zsh),
-# so the additions below have to be idempotent.
 prepend_path() {
     [ -d "$1" ] || return 0
     case ":$PATH:" in
@@ -36,7 +33,6 @@ prepend_path() {
     esac
 }
 
-# user's private bins
 prepend_path "$HOME/bin"
 prepend_path "$HOME/.local/bin"
 

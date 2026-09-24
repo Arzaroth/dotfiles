@@ -6,9 +6,6 @@
 # |_|   |_|   \___/|_|_|_| ||_/ \___)_|\___)____|\____|\____)
 #                        |_|
 
-# Locale. LANG is the default for every LC_* category that is not set
-# explicitly; exporting LC_ALL as well would override them all and make
-# per-machine settings such as LC_TIME impossible.
 export LANG=en_US.UTF-8
 
 # Multiplexer TERM fix.

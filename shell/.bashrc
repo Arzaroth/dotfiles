@@ -94,7 +94,6 @@ fi
 #alias la='ls -A'
 #alias l='ls -CF'
 
-# Alias definitions, shared with Zsh (see .config/zsh/90-post.zsh).
 if [ -r ~/.shell_aliases ]; then
     . ~/.shell_aliases
 fi

@@ -7,8 +7,6 @@
 # |_|   |_|   \___/|_|_|_| ||_/ \___)_|\___)____|\____|\____)
 #                        |_|
 
-# `command -v` prints a bare name for functions, aliases and builtins, which is
-# not a path, so testing its output with -x misses them.
 _have() {
     command -v "$1" >/dev/null 2>&1
 }
