@@ -106,11 +106,11 @@ jobs:
           mkdir -p "$target/bin" "$target/.local/bin"
           stow --target "$target" $(make list)
 
-      - name: Stub out Antidote
+      - name: Stub out Antidote and tpm
         run: |
           set -euo pipefail
           target="$RUNNER_TEMP/home"
-          mkdir -p "$target/.antidote"
+          mkdir -p "$target/.antidote" "$target/.tmux/plugins/tpm"
           printf 'antidote() { : }\n' > "$target/.antidote/antidote.zsh"
 
       - name: Start an interactive shell
@@ -127,6 +127,13 @@ jobs:
             cat "$RUNNER_TEMP/unexpected.log" >&2
             exit 1
           fi
+
+      - name: The antidote command is available in an interactive shell
+        run: |
+          set -euo pipefail
+          target="$RUNNER_TEMP/home"
+          HOME="$target" ZDOTDIR="$target" zsh -d -i -c 'whence -w antidote' 2>/dev/null \
+            | grep -q 'antidote: function'
 
       - name: PATH must not grow in nested shells
         run: |
@@ -149,3 +156,17 @@ jobs:
           printf 'antidote() { return 1 }\n' > "$target/.antidote/antidote.zsh"
           HOME="$target" ZDOTDIR="$target" zsh -d -i -c exit 2>/dev/null || true
           grep -q 'GOOD=1' "$target/.zsh_plugins.zsh"
+
+      - name: A failed first-login clone must leave nothing behind
+        run: |
+          set -euo pipefail
+          fresh="$RUNNER_TEMP/fresh"
+          mkdir -p "$fresh/fakebin"
+          stow --target "$fresh" $(make list)
+          printf '#!/bin/sh\nfor a; do d=$a; done\nmkdir -p "$d" && touch "$d/partial"\nexit 1\n' \
+            > "$fresh/fakebin/git"
+          chmod +x "$fresh/fakebin/git"
+          PATH="$fresh/fakebin:$PATH" HOME="$fresh" ZDOTDIR="$fresh" zsh -d -i -c exit 2>/dev/null
+          test ! -e "$fresh/.antidote"
+          test ! -e "$fresh/.tmux/plugins/tpm"
+          ! ls -d "$fresh"/.antidote.*.tmp "$fresh"/.tmux/plugins/tpm.*.tmp 2>/dev/null
