@@ -8,10 +8,32 @@
 
 ANTIDOTE_HOME="${ZDOTDIR:-$HOME}/.antidote"
 
-if [[ ! -r "${ANTIDOTE_HOME}/antidote.zsh" ]]; then
-    print -ru2 -- "zsh: antidote is not installed, run 'make bootstrap' in the dotfiles checkout"
-    return 0
+# ---- Install plugin managers on first login ----
+_clone_into() {
+    local url=$1 dest=$2 tmp="${2}.$$.tmp"
+    print -P "%F{33}▓▒░ %F{160}Installing (%F{33}${${url#https://github.com/}%.git}%F{160})…%f"
+    command mkdir -p "${dest:h}"
+    if command git clone -q --depth=1 "$url" "$tmp" && command mv -T "$tmp" "$dest"; then
+        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b"
+    else
+        command rm -rf "$tmp"
+        print -P "%F{160}▓▒░ The clone has failed.%f%b"
+        return 1
+    fi
+}
+
+[[ -r "${ANTIDOTE_HOME}/antidote.zsh" ]] || \
+    _clone_into https://github.com/mattmc3/antidote.git "$ANTIDOTE_HOME"
+
+if [[ ! -d "${HOME}/.tmux/plugins/tpm" ]]; then
+    command mkdir -p "${HOME}/.tmux/plugins"
+    command chmod g-rwX "${HOME}/.tmux/plugins"
+    _clone_into https://github.com/tmux-plugins/tpm "${HOME}/.tmux/plugins/tpm"
 fi
+
+unfunction _clone_into
+
+[[ -r "${ANTIDOTE_HOME}/antidote.zsh" ]] || return 0
 
 # ---- Load Antidote ----
 source "${ANTIDOTE_HOME}/antidote.zsh"

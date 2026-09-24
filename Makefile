@@ -3,24 +3,10 @@ TARGET := $(HOME)
 SKEL := /etc/skel
 PACKAGES := zsh emacs tmux shell prompt
 
-ZDOTDIR ?= $(HOME)
-ANTIDOTE := $(ZDOTDIR)/.antidote
-TPM := $(HOME)/.tmux/plugins/tpm
-
-.PHONY: deploy restow clean list skel skel-clean check-skel bootstrap submodules
-
-bootstrap: submodules $(ANTIDOTE) $(TPM)
+.PHONY: deploy restow clean list skel skel-clean check-skel submodules
 
 submodules:
 	git submodule update --init
-
-$(ANTIDOTE):
-	git clone --depth=1 https://github.com/mattmc3/antidote.git $@
-
-$(TPM):
-	mkdir -p $(dir $@)
-	chmod g-rwX $(dir $@)
-	git clone https://github.com/tmux-plugins/tpm $@
 
 deploy:
 	stow -t $(TARGET) $(PACKAGES)
