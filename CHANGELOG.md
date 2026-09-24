@@ -11,20 +11,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `make skel` and `make skel-clean`, stowing into `/etc/skel` for new accounts;
   both refuse to run outside `/etc/skel/dotfiles`.
-- `make bootstrap`, fetching the submodules, Antidote and tpm. Previously the
-  submodule checkout was documented nowhere and the two plugin managers were
-  cloned from the interactive startup files.
+- `make submodules`, fetching the Emacs submodules, which were previously
+  documented nowhere.
 - CI job that stows into a throwaway `HOME` and starts a real interactive Zsh,
   asserting it is silent on stderr, that `PATH` does not grow in nested
-  shells, and that a failed plugin-bundle regeneration keeps the previous
-  bundle.
+  shells, that a failed plugin-bundle regeneration keeps the previous
+  bundle, that `antidote` is available, and that a failed first-login clone
+  leaves nothing behind.
+- README section on how Antidote and tpm are installed and updated.
 
 ### Changed
 
 - Zsh files re-indented to 4 spaces, matching the `.editorconfig` rule they
   had been contradicting.
-- Antidote and tpm are installed by `make bootstrap` rather than by the
-  interactive startup files, keeping network access off the shell startup path.
+- Antidote and tpm are cloned into a temporary directory and moved into place
+  only on success, so a failed first-login clone is retried on the next login
+  instead of leaving a partial checkout that looks installed.
 - Bash loads `.shell_aliases`; it previously looked for a `.bash_aliases` this
   repository does not ship, so none of these aliases reached Bash.
 - The OSC 1337 directory report is registered with `add-zsh-hook` instead of a
@@ -45,6 +47,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- The `antidote` command was only defined while the plugin bundle was being
+  regenerated, so `antidote update` could not be run from a normal shell.
 - `.profile` prepended to `PATH` unconditionally while being sourced by every
   interactive Zsh, so each nested shell duplicated its entries.
 - `pyenv init` ran whenever `~/.pyenv` existed, printing

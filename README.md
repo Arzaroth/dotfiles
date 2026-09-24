@@ -19,16 +19,11 @@ Each directory is a Stow package.
 
 ## Deployment
 
-First, fetch the submodules and the plugin managers the shells expect
-(Antidote for Zsh, tpm for tmux):
+Fetch the Emacs submodules:
 
 ```sh
-make bootstrap
+make submodules
 ```
-
-This is deliberately a Make target rather than something the shell startup
-files do on their own: a login shell should not block on the network, and a
-half-finished clone should not leave the shell broken. It is safe to re-run.
 
 Deploy all packages:
 
@@ -66,3 +61,18 @@ relative to the checkout (`.zshrc -> dotfiles/zsh/.zshrc`), so they only resolve
 once `useradd` has copied both the links and `dotfiles/` into the new home.
 
 `make skel-clean` removes them again.
+
+## Plugin managers
+
+[Antidote](https://github.com/mattmc3/antidote) (Zsh) and
+[tpm](https://github.com/tmux-plugins/tpm) (tmux) are not part of the
+checkout. The first interactive Zsh of each account clones them into
+`~/.antidote` and `~/.tmux/plugins/tpm`; if the clone fails, the next login
+tries again.
+
+Updating is manual:
+
+- `antidote update` updates the Zsh plugins and Antidote itself.
+- `prefix + I` installs and `prefix + U` updates tmux plugins, from inside tmux.
+
+Editing `.zsh_plugins.txt` regenerates the plugin bundle on the next shell.
